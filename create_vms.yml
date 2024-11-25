@@ -1,0 +1,117 @@
+---
+- name: Deploy Multiple VMs From Template
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - community.vmware
+
+  tasks:
+    - name: Debug loaded variables
+      debug:
+        var: vms
+
+    - name: Verify vCenter connection
+      community.vmware.vmware_about_info:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+      register: vcenter_info
+      ignore_errors: true
+
+    - name: Deploy Linux VMs
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ datacenter }}"
+        cluster: "{{ cluster }}"
+        folder: "{{ item.folder }}"
+        name: "{{ item.name }}"
+        template: "{{ item.template }}"
+        state: present
+        datastore: "{{ datastore }}"
+        customization:
+          hostname: "{{ item.name }}"
+          dns_servers: 
+            - "{{ item.primary_dns }}"
+            - "{{ item.secondary_dns }}"
+          dns_suffix: "{{ item.domain }}"
+          domain: "{{ item.domain }}"
+          password: "{{ item.password }}"
+          hwclockUTC: true
+          timezone: "Asia/Riyadh"
+        networks:
+          - name: "{{ network_name }}"
+            device_type: vmxnet3
+            ip: "{{ item.ip_address }}"
+            netmask: "{{ item.netmask }}"
+            gateway: "{{ item.gateway }}"
+            type: static
+            start_connected: true
+        hardware:
+          memory_mb: "{{ item.memory }}"
+          num_cpus: "{{ item.cpu }}"
+          hotadd_cpu: true
+          hotadd_memory: true
+        wait_for_ip_address: true
+        wait_for_customization: true
+      loop: "{{ vms | selectattr('os_type', 'equalto', 'linux') | list }}"
+      when: vms | length > 0
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Deploy Windows VMs
+      community.vmware.vmware_guest:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: false
+        datacenter: "{{ datacenter }}"
+        cluster: "{{ cluster }}"
+        folder: "{{ item.folder }}"
+        name: "{{ item.name }}"
+        template: "{{ item.template }}"
+        state: present
+        datastore: "{{ datastore }}"
+        customization:
+          hostname: "{{ item.name }}"
+          password: "{{ item.password }}"
+          orgname: "Organization"
+          timezone: 190
+          autologon: true
+          autologoncount: 1
+          joinworkgroup: "WORKGROUP"
+          dns_servers:
+            - "{{ item.primary_dns }}"
+            - "{{ item.secondary_dns }}"
+          dns_suffix: "{{ item.domain }}"
+          domain: "{{ item.domain }}"
+          fullname: "Administrator"
+        networks:
+          - name: "{{ network_name }}"
+            ip: "{{ item.ip_address }}"
+            netmask: "{{ item.netmask }}"
+            gateway: "{{ item.gateway }}"
+            type: static
+            start_connected: true
+        hardware:
+          memory_mb: "{{ item.memory }}"
+          num_cpus: "{{ item.cpu }}"
+          scsi: paravirtual
+          hotadd_cpu: true
+          hotadd_memory: true
+        wait_for_ip_address: true
+        wait_for_customization: true
+      loop: "{{ vms | selectattr('os_type', 'equalto', 'windows') | list }}"
+      when: vms | length > 0
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Display deployment summary
+      debug:
+        msg: "Deployed VM {{ item.name }} ({{ item.os_type }}) with IP: {{ item.ip_address }}"
+      loop: "{{ vms }}"
+      loop_control:
+        label: "{{ item.name }}"
