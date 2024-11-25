@@ -21,6 +21,7 @@
    vim vars.yml # add your parameters in it  
    ansible-playbook create-vms.yml -e "@vars.yml"
 ```
+#                  OR 
  ###  Run the create-vms-script.sh then it will ask you all required vars to deploy your VMs.
 ```
 ./create-vms-script.sh    # follow the scrip and it will execute everything
