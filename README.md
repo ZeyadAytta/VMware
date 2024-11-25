@@ -2,7 +2,9 @@
 > Hello There, This is a simple script that create linux and Windows VMs on vCenter.
 
 ## Install Ansible VMware community
+   ```
    ansible-galaxy collection install community.vmware
+   ```
 ## Verify installation
    ```
    ansible-galaxy collection list | grep community.vmware
@@ -14,7 +16,7 @@
    Make sure that the Templates that you're are creating VMs from have VMwareTools installed.
 ```
 ## Creating VMs:
- ### you can create VMs by changing parameters in the vars.yml file. Then run the below command
+ ### You can create VMs by changing parameters in the vars.yml file. Then run the below command
 ```
    vim vars.yml # add your parameters in it  
    ansible-playbook create-vms.yml -e "@vars.yml"
