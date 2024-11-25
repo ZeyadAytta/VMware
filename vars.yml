@@ -1,9 +1,9 @@
 ---
-vcenter_hostname: "192.168.8.252"
+vcenter_hostname: "x.x.x.x"  # Your vCenter IP or FQDN
 vcenter_username: "administrator@vsphere.local"
-vcenter_password: "P@ssw0rd@123"
-datacenter: "Cloud52-DC"
-cluster: "Cloud52-CLS"
+vcenter_password: "Passowrd" 
+datacenter: "example-DC"
+cluster: "example-CLS"
 datastore: "WLD-DS"
 network_name: "VM Network"
 
@@ -18,8 +18,8 @@ vms:
     gateway: "192.168.95.2"
     primary_dns: "8.8.8.8"
     secondary_dns: "4.4.3.3"
-    domain: "cloud52.local"
-    domain_search: "cloud52.local"
+    domain: "example.local"
+    domain_search: "example.local"
     cpu: 1
     memory: 512
   - name: "vm2"
@@ -32,8 +32,8 @@ vms:
     gateway: "192.168.95.2"
     primary_dns: "8.8.8.8"
     secondary_dns: "4.4.3.3"
-    domain: "cloud52.local"
-    domain_search: "cloud52.local"
+    domain: "example.local"
+    domain_search: "example.local"
     cpu: 1
     memory: 512
   - name: "vm3"
@@ -46,8 +46,8 @@ vms:
     gateway: "192.168.95.2"
     primary_dns: "8.8.8.8"
     secondary_dns: "4.4.3.3"
-    domain: "cloud52.local"
-    domain_search: "cloud52.local"
+    domain: "example.local"
+    domain_search: "example.local"
     cpu: 1
     memory: 512
   - name: "vm4"
@@ -60,7 +60,7 @@ vms:
     gateway: "192.168.95.2"
     primary_dns: "8.8.8.8"
     secondary_dns: "4.4.3.3"
-    domain: "cloud52.local"
-    domain_search: "cloud52.local"
+    domain: "example.local"
+    domain_search: "example.local"
     cpu: 1
     memory: 512
